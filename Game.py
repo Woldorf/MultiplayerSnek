@@ -11,8 +11,8 @@ class GameSystem:
         self.CellsTall = CellsTall
         self.P1Ready = False
         self.P2Ready = False
-        self.AppleLocation = self.FirstApple()
-        self.AppleColor = (255, 0, 0)
+        #self.AppleLocation = self.FirstApple()
+        #self.AppleColor = (255, 0, 0)
 
     def FirstApple(self):
         x = random.randint(0, self.CellsWide - 1)

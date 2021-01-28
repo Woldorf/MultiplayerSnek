@@ -46,12 +46,8 @@ WinnerAppleSound = pygame.mixer.Sound("SNEK_Sounds/WinningApple.wav")
 #Set game music volume lower:
 GameMusicChannel.set_volume(0.2)
 
-Network = Network()
 
-#System functions:
-def terminate():
-    pygame.quit()
-    sys.exit()
+Network = Network()
 
 Player = Network.connect()
 print("You're player #" + str(int(Player) +1))
@@ -68,7 +64,7 @@ for event in pygame.event.get():
     if event.type == QUIT:
         break
     elif event.type == KEYDOWN:
-        if event.key == K_ENTER:
+        if event.key == K_KP_ENTER:
             if Player == 0:
                 game.P1Ready = True
             else:
