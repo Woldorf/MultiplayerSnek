@@ -21,6 +21,8 @@ network.py - What ClientSide.py uses to connect to ServerSide.py
 ServerSide.py - Host program
 ClientSide.py - Client program
 
+To be run, in network.py on lines 6 and 7 and ServerSide.py lines 7 and 8 you will need to change the port and local IP of the host
+
 This needs a few libraries, socket and pickle which are system libraries, and pygame which you will need to install. Here are instructions on installing it: http://automatetheboringstuff.com/2e/appendixa/
 
 Current bug/issue:
