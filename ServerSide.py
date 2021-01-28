@@ -4,8 +4,8 @@ from _thread import *
 from Snek import Snek
 from Game import GameSystem
 
-server = "192.168.49.248"
-port = 12345
+server = "YOUR IP" in form 123.123.12.12
+port = YOUR_PORT in form -> 12345
 
 Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
