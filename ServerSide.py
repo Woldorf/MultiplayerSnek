@@ -4,8 +4,8 @@ from _thread import *
 from Snek import Snek
 from Game import GameSystem
 
-server = "YOUR IP" in form 123.123.12.12
-port = YOUR_PORT in form -> 12345
+server = "192.168.49.248"
+port = 12345
 
 Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -47,16 +47,14 @@ def threadedClient(Connection,Player,IDCount,gameID,Players):
                 if not Players:
                     break
 
-                Connection.sendall(pickle.dumps(Players))
-                Connection.sendall(pickle.dumps(game))
+                Connection.sendall(pickle.dumps([Players,game]))
 
                 if game.GameActive == True:
                     
                     Players[Player].MoveSnek(game.xSize,game.ySize,Players[Player].Direction)
                     games[gameID] = game
 
-                    Players = pickle.loads(Connection.recv(4096))
-                    game = pickle.loads(Connection.recv(4096))
+                    Players,game = pickle.loads(Connection.recv(4096))
             else:
                 break
         except:
