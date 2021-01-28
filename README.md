@@ -29,3 +29,7 @@ Current bug/issue:
   Which is thrown on line 12 of network.py
   
 This game is currently not playable. The ETA on it being playable is about Feb. 12th
+
+SNEK_Sounds folder is the sound effects of the game when it is playable. You can ignore it.
+
+A playable, single player version is available here: https://github.com/Woldorf/SnekGame.git
