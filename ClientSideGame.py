@@ -46,31 +46,19 @@ WinnerAppleSound = pygame.mixer.Sound("SNEK_Sounds/WinningApple.wav")
 #Set game music volume lower:
 GameMusicChannel.set_volume(0.2)
 
+#System functions:
+def terminate():
+    pygame.quit()
+    sys.exit()
 
 Network = Network()
 
 Player = Network.connect()
 print("You're player #" + str(int(Player) +1))
 
-Drawing.DrawGrid(Window,GameWidth,GameHeight)
-if Player == 0:
-    Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
-else:
-    Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
-
-Players,game = Network.GetData()
-
-for event in pygame.event.get(): 
-    if event.type == QUIT:
-        break
-    elif event.type == KEYDOWN:
-        if event.key == K_KP_ENTER:
-            if Player == 0:
-                game.P1Ready = True
-            else:
-                game.P2Ready = True
-
 while True:
+    Players,game = Network.GetData()
+
     GameWidth,GameHeight = game.GetBoard(CELLSIZE)
     Window = pygame.display.set_mode((GameWidth, GameHeight),0, 16)
 
@@ -80,25 +68,42 @@ while True:
         if event.type == QUIT:
             break
         elif event.type == KEYDOWN:
-            #Snek 1 direction settings:
-            if (event.key == K_LEFT or event.key == K_j) and (Players[Player].Direction != "Right"):
-                Players[Player].Direction = "Left"
-            elif (event.key == K_RIGHT or event.key == K_l) and (Players[Player].Direction != "Left"):
-                Players[Player].Direction = "Right"
-            elif (event.key == K_UP or event.key == K_i)  and (Players[Player].Direction != "Down"):
-                Players[Player].Direction = "Up"
-            elif (event.key == K_DOWN or event.key == K_k) and (Players[Player].Direction != "Up"):
-                Players[Player].Direction = "Down"
+            if (game.P1Ready == False) or (game.P2Ready == False):
+                if (event.key == K_RETURN):
+                    if Player == 0:
+                        game.P1Ready = True
+                    else: 
+                        game.P2Ready = True
+            else:
+                if (event.key == K_LEFT or event.key == K_j) and (Players[Player].Direction != "Right"):
+                    Players[Player].Direction = "Left"
+                elif (event.key == K_RIGHT or event.key == K_l) and (Players[Player].Direction != "Left"):
+                    Players[Player].Direction = "Right"
+                elif (event.key == K_UP or event.key == K_i)  and (Players[Player].Direction != "Down"):
+                    Players[Player].Direction = "Up"
+                elif (event.key == K_DOWN or event.key == K_k) and (Players[Player].Direction != "Up"):
+                    Players[Player].Direction = "Down"
 
-    Snek1 = Players[0]
-    Snek2 = Players[1]
+    if game.P1Ready and game.P2Ready:
+        Snek1 = Players[0]
+        Snek2 = Players[1]
+        Drawing.DrawGrid(Window,GameWidth,GameHeight)
+        Drawing.DrawSNEK(Window,Snek1.Cords,Snek1.Color,Snek1.InnerColor)
+        Drawing.DrawSNEK(Window,Snek2.Cords,Snek2.Color,Snek1.InnerColor)
+        Drawing.DrawScores(Window,"LEFT",Snek1.Cords,GameWidth)
+        Drawing.DrawScores(Window,"RIGHT",Snek2.Cords,GameWidth)
+        Drawing.DrawApple(Window,game.AppleLocation,game.AppleColor)
 
-    Drawing.DrawGrid(Window,GameWidth,GameHeight)
-    Drawing.DrawSNEK(Window,Snek1.Cords,Snek1.Color,Snek1.InnerColor)
-    Drawing.DrawSNEK(Window,Snek2.Cords,Snek2.Color,Snek1.InnerColor)
-    Drawing.DrawScores(Window,"LEFT",Snek1.Cords,GameWidth)
-    Drawing.DrawScores(Window,"RIGHT",Snek2.Cords,GameWidth)
-    Drawing.DrawApple(Window,game.AppleLocation,game.AppleColor)
+    else:
+        Drawing.DrawGrid(Window,GameWidth,GameHeight)
+        if Player == 0:
+            Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
+        else:
+            Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
+
+    pygame.display.flip()
+
+    print(game.P1Ready,game.P2Ready)
     
-    Players, game = Network.send(Players,game)
+    Network.send(Players,game)
     TicksPerSecCLOCK.tick(TicksPerSec)

@@ -32,16 +32,12 @@ def DrawSNEK(Window,CordsList,Color,InnerColor):
             pygame.draw.rect(Window, Color, SnekSegmentRect)
             pygame.draw.rect(Window, InnerColor, SnekInnerSegmentRect)
 
-    pygame.display.flip()
-
 def DrawApple(Window,Cords,Color):
     x=Cords['x'] * CELLSIZE
     y=Cords['y'] * CELLSIZE
 
     FruitRect=pygame.Rect(x,y,CELLSIZE,CELLSIZE)
     pygame.draw.rect(Window,Color,FruitRect)
-
-    pygame.display.flip()
 
 def DrawScores(Window,Side,SnekCords,xSize):
     FONT = pygame.font.Font("freesansbold.ttf",18)
@@ -58,7 +54,6 @@ def DrawScores(Window,Side,SnekCords,xSize):
         scoreRect.topright = ((xSize -10) , 10)    
     
     Window.blit(scoreSurf, scoreRect)
-    pygame.display.flip()
 
 def DrawStartScreen(Window,xSize,ySize,Player):
     BIGFONT = pygame.font.Font("freesansbold.ttf",26)
@@ -80,8 +75,6 @@ def DrawStartScreen(Window,xSize,ySize,Player):
     ControlsRect.center = ((xSize/2),(ySize - (ySize/3)))
 
     Window.blit(TitleScreenWords,TitleScreenRect)
-    Window.blit(ControlsWords,ControlsRect)
-
-    pygame.display.flip()
+    Window.blit(ControlsWords,ControlsRect) 
 
     #COMING SOON: COUNTDOWN TILL START

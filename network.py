@@ -8,13 +8,14 @@ class Network:
         self.addr = (self.server, self.port)
 
     def GetData(self):
-        return pickle.loads(self.client.recv(4096))
+        try:
+            return pickle.loads(self.client.recv(4096))
+        except:
+            pass
 
     def connect(self):
         self.client.connect(self.addr)
         return pickle.loads(self.client.recv(4096))
 
-    def send(self, Players,Game):
+    def send(self, Players, Game):        
         self.client.sendall(pickle.dumps([Players,Game]))
-
-        return pickle.loads(self.client.recv(4096))

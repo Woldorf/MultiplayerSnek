@@ -40,6 +40,7 @@ def threadedClient(Connection,Player,IDCount,gameID,Players):
 
     game = games[gameID]
     Connection.sendall(pickle.dumps(Player))
+    Connection.sendall(pickle.dumps([Players,game]))
 
     while True:
         try:
@@ -47,14 +48,16 @@ def threadedClient(Connection,Player,IDCount,gameID,Players):
                 if not Players:
                     break
 
-                Connection.sendall(pickle.dumps([Players,game]))
+                Players,game = pickle.loads(Connection.recv(4096))
 
-                if game.GameActive == True:
-                    
+                if game.P1Ready and game.P2Ready:
                     Players[Player].MoveSnek(game.xSize,game.ySize,Players[Player].Direction)
-                    games[gameID] = game
 
-                    Players,game = pickle.loads(Connection.recv(4096))
+                games[gameID] = game
+
+                Connection.sendall(pickle.dumps([Players,game]))
+                print(game.P1Ready, game.P2Ready)
+ 
             else:
                 break
         except:
