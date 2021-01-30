@@ -36,28 +36,38 @@ CELLSIZE=20
 CellWidth = int(GameWidth / CELLSIZE)
 CellHeight = int(GameHeight / CELLSIZE)
 
-def threadedClient(Connection,Player,IDCount,gameID,Players):
+def threadedClient(Connection,Player,IDCount,gameID):
 
     game = games[gameID]
+
     Connection.sendall(pickle.dumps(Player))
-    Connection.sendall(pickle.dumps([Players,game]))
+    Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
+
+    SnekDirection = Players[Player].Direction
 
     while True:
         try:
             if gameID in games:
-                if not Players:
+                if not SnekDirection:
                     break
+                
+                if Players[0].Ready and Players[1].Ready:
+                    SnekDirection,Player = pickle.loads(Connection.recv(4096))
+                    Players[Player].Direction = SnekDirection
 
-                Players,game = pickle.loads(Connection.recv(4096))
+                    Players[Player].MoveSnek()
+                    Players[0],Players[1] = game.Logic(Players[0],Players[1])
+                    
+                    print("TEST1")
+                else:
+                    PlayerReady,Player = pickle.loads(Connection.recv(4096))
+                    Players[Player].Ready = PlayerReady
 
-                if game.P1Ready and game.P2Ready:
-                    Players[Player].MoveSnek(game.xSize,game.ySize,Players[Player].Direction)
+                    print("TEST2")
 
-                games[gameID] = game
+                print(Players[0].Ready,Players[1].Ready)
+                Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
 
-                Connection.sendall(pickle.dumps([Players,game]))
-                print(game.P1Ready, game.P2Ready)
- 
             else:
                 break
         except:
@@ -115,7 +125,6 @@ while True:
         games[gameID] = GameSystem(gameID,CellWidth,CellHeight)
         print("Creating a new game")
     else:
-        games[gameID].GameActive = True
         Player = 1
     
-    start_new_thread(threadedClient, (Connection, Player, IDCount, gameID, Players))
+    start_new_thread(threadedClient, (Connection, Player, IDCount, gameID))

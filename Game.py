@@ -3,16 +3,11 @@ import random
 class GameSystem:
     def __init__(self, id,CellsWide,CellsTall):
         self.id = id
-        self.Player1Ready = False
-        self.Player2Ready = False
-        self.GameActive = False
         self.TicksPerSec = 10
         self.CellsWide = CellsWide
         self.CellsTall = CellsTall
-        self.P1Ready = False
-        self.P2Ready = False
+        self.CellSize = 20
         self.AppleLocation = self.FirstApple()
-        self.AppleColor = (255, 0, 0)
 
     def FirstApple(self):
         x = random.randint(0, self.CellsWide - 1)
@@ -24,24 +19,11 @@ class GameSystem:
     def MakeApples(self):
         x = random.randint(0, self.CellsWide - 1)
         y = random.randint(0, self.CellsTall - 1)
-        Chance = random.randint(0,201)
 
-        if (Chance % 200) == 0:
-            Type = "Master"
-        else:
-            TypeList=["Normal","Speed","Board"]
-            Type = random.choice(TypeList)
+        TypeList=["Normal","Speed","Board"]
+        Type = random.choice(TypeList)
 
-        if Type == "Normal":
-            self.AppleColor = (255, 0, 0)
-        elif Type == "Speed":
-            self.AppleColor = (255, 255, 0)
-        elif Type == "Board":
-            self.AppleColor = (255, 255, 0)
-        elif Type == "Master":
-            self.AppleColor = (255, 0, 255)
-
-        self.AppleLocation = {'x':x,'y':y,'Type':Type}
+        self.AppleLocation = {"x":x,"y":y,"Type":Type}
 
     def GetApple(self):
         return self.AppleLocation
@@ -52,9 +34,43 @@ class GameSystem:
     def GetTPS(self):
         return self.TicksPerSec
 
-    def IncreaseBoard(self,CellSize):
-        self.CellsTall += CellSize
-        self.CellsWide += CellSize
+    def IncreaseBoard(self):
+        self.CellsTall += self.CellSize
+        self.CellsWide += self.CellSize
 
-    def GetBoard(self,CellSize):
-        return (self.CellsWide * CellSize), (self.CellsTall * CellSize)
+    def GetBoard(self):
+        return (self.CellsWide * self.CellSize), (self.CellsTall * self.CellSize)
+
+    def Logic(self,Snek1,Snek2):
+        HEAD = 0
+        if (Snek1.Cords[HEAD]["x"] == -1 or Snek1.Cords[HEAD]["x"] == self.CellsWide or Snek1.Cords[HEAD]["y"] == -1 or Snek1.Cords[HEAD]["y"] == self.CellsTall)\
+        or (Snek2.Cords[HEAD]["x"] == -1 or Snek2.Cords[HEAD]["x"] == self.CellsWide or Snek2.Cords[HEAD]["y"] == -1 or Snek2.Cords[HEAD]["y"] == self.CellsTall):
+            Snek1.Ready = False
+            Snek2.Ready = False
+
+        for Segment in Snek1.Cords:
+            if (Segment["x"] == Snek1.Cords[HEAD]["x"] or Segment["y"] == Snek1.Cords[HEAD]["y"])\
+            or (Segment["x"] == Snek2.Cords[HEAD]["x"] or Segment["y"] == Snek2.Cords[HEAD]["y"]):
+                Snek1.Ready = False
+                Snek2.Ready = False
+
+        for Segment in Snek2.Cords:
+            if (Segment["x"] == Snek2.Cords[HEAD]["x"] or Segment["y"] == Snek2.Cords[HEAD]["y"])\
+            or (Segment["x"] == Snek1.Cords[HEAD]["x"] or Segment["y"] == Snek1.Cords[HEAD]["y"]):
+                Snek1.Ready = False
+                Snek2.Ready = False
+
+        #Check if Snek 1 hit an apple
+        if Snek1.Cords[HEAD]["x"] == self.AppleLocation["x"] and Snek1.Cords[HEAD]["y"] == self.AppleLocation["y"]:
+            if self.AppleLocation["Type"] == "Normal":
+                self.MakeApples()
+            elif self.AppleLocation["Type"] == "Speed":
+                self.MakeApples()
+                self.IncreasesTPS +=1
+                del Snek1.Cords[-1]
+            elif self.AppleLocation["Type"] == "Board":
+                self.MakeApples()
+                self.IncreaseBoard()
+                del Snek1.Cords[-1]
+        
+        return Snek1,Snek2
