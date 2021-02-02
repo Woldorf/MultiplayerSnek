@@ -9,10 +9,10 @@ class Network:
 
     def GetData(self):
         return pickle.loads(self.client.recv(4096))
-        
+
     def connect(self):
         self.client.connect(self.addr)
         return pickle.loads(self.client.recv(4096))
 
-    def send(self, Ready, Player):        
-        self.client.sendall(pickle.dumps([Ready,Player]))
+    def send(self, Direction, Ready, Player):        
+        self.client.sendall(pickle.dumps([Direction,Ready,Player]))

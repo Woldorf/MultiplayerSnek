@@ -54,13 +54,12 @@ def terminate():
 Network = Network()
 
 Player = Network.connect()
-print("You're player #" + str(int(Player) +1))
 
 while True:
     MeSnek,OtherSnek,game = Network.GetData()
 
     GameWidth,GameHeight = game.GetBoard()
-    Window = pygame.display.set_mode((GameWidth, GameHeight),0, 16)
+    Window = pygame.display.set_mode((GameWidth, GameHeight),0,32)
 
     TicksPerSec = game.GetTPS()
 
@@ -96,8 +95,6 @@ while True:
         Drawing.DrawScores(Window,"RIGHT",OtherSnek.Cords,GameWidth)
         Drawing.DrawApple(Window,game.AppleLocation,AppleColor)
 
-        Network.send(MeSnek.Direction,Player)
-
     elif (MeSnek.Ready == False) or (OtherSnek.Ready == False):
         Drawing.DrawGrid(Window,GameWidth,GameHeight)
 
@@ -106,8 +103,6 @@ while True:
         else:
             Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
 
-        Network.send(MeSnek.Ready,Player)
-
+    Network.send(MeSnek.Direction,MeSnek.Ready,Player)
     pygame.display.update()
-    
     TicksPerSecCLOCK.tick(TicksPerSec)

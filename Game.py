@@ -43,20 +43,20 @@ class GameSystem:
 
     def Logic(self,Snek1,Snek2):
         HEAD = 0
-        if (Snek1.Cords[HEAD]["x"] == -1 or Snek1.Cords[HEAD]["x"] == self.CellsWide or Snek1.Cords[HEAD]["y"] == -1 or Snek1.Cords[HEAD]["y"] == self.CellsTall)\
-        or (Snek2.Cords[HEAD]["x"] == -1 or Snek2.Cords[HEAD]["x"] == self.CellsWide or Snek2.Cords[HEAD]["y"] == -1 or Snek2.Cords[HEAD]["y"] == self.CellsTall):
+        if Snek1.Cords[HEAD]["x"] == -1 or Snek1.Cords[HEAD]["x"] == self.CellsWide or Snek1.Cords[HEAD]["y"] == -1 or Snek1.Cords[HEAD]["y"] == self.CellsTall\
+        or Snek2.Cords[HEAD]["x"] == -1 or Snek2.Cords[HEAD]["x"] == self.CellsWide or Snek2.Cords[HEAD]["y"] == -1 or Snek2.Cords[HEAD]["y"] == self.CellsTall:
             Snek1.Ready = False
             Snek2.Ready = False
 
-        for Segment in Snek1.Cords:
-            if (Segment["x"] == Snek1.Cords[HEAD]["x"] or Segment["y"] == Snek1.Cords[HEAD]["y"])\
-            or (Segment["x"] == Snek2.Cords[HEAD]["x"] or Segment["y"] == Snek2.Cords[HEAD]["y"]):
+        for Segment in Snek1.Cords[1:]:
+            if (Segment["x"] == Snek1.Cords[HEAD]["x"] and Segment["y"] == Snek1.Cords[HEAD]["y"])\
+            or (Segment["x"] == Snek2.Cords[HEAD]["x"] and Segment["y"] == Snek2.Cords[HEAD]["y"]):
                 Snek1.Ready = False
                 Snek2.Ready = False
 
-        for Segment in Snek2.Cords:
-            if (Segment["x"] == Snek2.Cords[HEAD]["x"] or Segment["y"] == Snek2.Cords[HEAD]["y"])\
-            or (Segment["x"] == Snek1.Cords[HEAD]["x"] or Segment["y"] == Snek1.Cords[HEAD]["y"]):
+        for Segment in Snek2.Cords[1:]:
+            if (Segment["x"] == Snek2.Cords[HEAD]["x"] and Segment["y"] == Snek2.Cords[HEAD]["y"])\
+            or (Segment["x"] == Snek1.Cords[HEAD]["x"] and Segment["y"] == Snek1.Cords[HEAD]["y"]):
                 Snek1.Ready = False
                 Snek2.Ready = False
 
@@ -66,11 +66,27 @@ class GameSystem:
                 self.MakeApples()
             elif self.AppleLocation["Type"] == "Speed":
                 self.MakeApples()
-                self.IncreasesTPS +=1
+                self.IncreasesTPS()
                 del Snek1.Cords[-1]
             elif self.AppleLocation["Type"] == "Board":
                 self.MakeApples()
                 self.IncreaseBoard()
                 del Snek1.Cords[-1]
+            else:
+                del Snek1.Cords[-1]
+        #Check if snek 2 hit an apple
+        if Snek2.Cords[HEAD]["x"] == self.AppleLocation["x"] and Snek2.Cords[HEAD]["y"] == self.AppleLocation["y"]:
+            if self.AppleLocation["Type"] == "Normal":
+                self.MakeApples()
+            elif self.AppleLocation["Type"] == "Speed":
+                self.MakeApples()
+                self.IncreasesTPS()
+                del Snek2.Cords[-1]
+            elif self.AppleLocation["Type"] == "Board":
+                self.MakeApples()
+                self.IncreaseBoard()
+                del Snek2.Cords[-1]
+            else:
+                del Snek2.Cords[-1]
         
         return Snek1,Snek2

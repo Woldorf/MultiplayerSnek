@@ -4,7 +4,7 @@ from _thread import *
 from Snek import Snek
 from Game import GameSystem
 
-server = "192.168.49.248"
+server = "192.168.49.248"   
 port = 12345
 
 Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,7 +41,10 @@ def threadedClient(Connection,Player,IDCount,gameID):
     game = games[gameID]
 
     Connection.sendall(pickle.dumps(Player))
-    Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
+    if Player == 0:
+        Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
+    else:
+        Connection.sendall(pickle.dumps([Players[1],Players[0],game]))
 
     SnekDirection = Players[Player].Direction
 
@@ -51,22 +54,19 @@ def threadedClient(Connection,Player,IDCount,gameID):
                 if not SnekDirection:
                     break
                 
+                SnekDirection,PlayerReady,Player = pickle.loads(Connection.recv(4096))
+                
                 if Players[0].Ready and Players[1].Ready:
-                    SnekDirection,Player = pickle.loads(Connection.recv(4096))
                     Players[Player].Direction = SnekDirection
-
                     Players[Player].MoveSnek()
                     Players[0],Players[1] = game.Logic(Players[0],Players[1])
-                    
-                    print("TEST1")
                 else:
-                    PlayerReady,Player = pickle.loads(Connection.recv(4096))
                     Players[Player].Ready = PlayerReady
 
-                    print("TEST2")
-
-                print(Players[0].Ready,Players[1].Ready)
-                Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
+                if Player == 0:
+                    Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
+                else:
+                    Connection.sendall(pickle.dumps([Players[1],Players[0],game]))
 
             else:
                 break
@@ -83,22 +83,22 @@ def threadedClient(Connection,Player,IDCount,gameID):
     Connection.close()
 
 def SnekStartingCords(CELLSIZE):
-    DirectionList =["left","right","up","down"]
+    DirectionList =["Left","Right","Up","Down"]
     FacingDirection = random.choice(DirectionList)
 
     StartSquareX = random.randint(3,CELLSIZE-3)
     StartSquareY = random.randint(3,CELLSIZE-3)
 
-    if FacingDirection == "left":
+    if FacingDirection == "Left":
         DifferenceX = 1
         DifferenceY = 0
-    elif FacingDirection == "right":
+    elif FacingDirection == "Right":
         DifferenceX = -1
         DifferenceY = 0
-    elif FacingDirection == "down":
+    elif FacingDirection == "Down":
         DifferenceX = 0
         DifferenceY = -1
-    elif FacingDirection == "up":
+    elif FacingDirection == "Up":
         DifferenceX = 0
         DifferenceY = 1 
 

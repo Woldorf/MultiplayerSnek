@@ -9,13 +9,13 @@ class Snek:
     def MoveSnek(self):
         HEAD = 0
         
-        if self.Direction == "L":
+        if self.Direction == "Left":
             NewHead = {'x': self.Cords[HEAD]['x'] - 1, 'y': self.Cords[HEAD]['y']}
-        elif self.Direction == "R":
+        elif self.Direction == "Right":
             NewHead = {'x': self.Cords[HEAD]['x'] + 1, 'y': self.Cords[HEAD]['y']}
-        elif self.Direction == "U":
+        elif self.Direction == "Up":
             NewHead = {'x': self.Cords[HEAD]['x'], 'y': self.Cords[HEAD]['y'] - 1}
-        elif self.Direction == "D":
+        elif self.Direction == "Down":
             NewHead = {'x': self.Cords[HEAD]['x'], 'y': self.Cords[HEAD]['y'] + 1}
 
         self.Cords.insert(HEAD,NewHead)
