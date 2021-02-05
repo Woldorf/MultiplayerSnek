@@ -8,7 +8,7 @@ class Snek:
 
     def MoveSnek(self):
         HEAD = 0
-        
+    
         if self.Direction == "Left":
             NewHead = {'x': self.Cords[HEAD]['x'] - 1, 'y': self.Cords[HEAD]['y']}
         elif self.Direction == "Right":

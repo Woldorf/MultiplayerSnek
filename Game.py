@@ -72,8 +72,8 @@ class GameSystem:
                 self.MakeApples()
                 self.IncreaseBoard()
                 del Snek1.Cords[-1]
-            else:
-                del Snek1.Cords[-1]
+        else:
+            del Snek1.Cords[-1]
         #Check if snek 2 hit an apple
         if Snek2.Cords[HEAD]["x"] == self.AppleLocation["x"] and Snek2.Cords[HEAD]["y"] == self.AppleLocation["y"]:
             if self.AppleLocation["Type"] == "Normal":
@@ -86,7 +86,55 @@ class GameSystem:
                 self.MakeApples()
                 self.IncreaseBoard()
                 del Snek2.Cords[-1]
-            else:
-                del Snek2.Cords[-1]
+        else:
+            del Snek2.Cords[-1]
+
+        if Snek1.Ready == False and Snek2.Ready() == False:
+            Snek1, Snek2 = GameReset(False, Snek1, Snek2)
         
         return Snek1,Snek2
+
+def GameReset(Starting = True, Snek1 = None, Snek2 = None):
+    CELLSIZE = 20
+    if Starting == True:
+        TempCordsList,TempDirection = SnekStartingCords(CELLSIZE)
+        TempCordsList2,TempDirection2 = SnekStartingCords(CELLSIZE)
+
+        return TempCordsList,TempDirection,TempCordsList2,TempDirection2
+    else:
+        TempCordsList,TempDirection = SnekStartingCords(CELLSIZE)
+        TempCordsList2,TempDirection2 = SnekStartingCords(CELLSIZE)
+
+        Snek1.Cords = TempCordsList
+        Snek1.Direction = TempDirection
+        Snek2.Cords = TempCordsList2
+        Snek2.Direction = TempDirection2
+
+        return Snek1,Snek2
+
+def SnekStartingCords(CELLSIZE):
+    DirectionList =["Left","Right","Up","Down"]
+    FacingDirection = random.choice(DirectionList)
+
+    StartSquareX = random.randint(3,CELLSIZE-3)
+    StartSquareY = random.randint(3,CELLSIZE-3)
+
+    if FacingDirection == "Left":
+        DifferenceX = 1
+        DifferenceY = 0
+    elif FacingDirection == "Right":
+        DifferenceX = -1
+        DifferenceY = 0
+    elif FacingDirection == "Down":
+        DifferenceX = 0
+        DifferenceY = -1
+    elif FacingDirection == "Up":
+        DifferenceX = 0
+        DifferenceY = 1 
+
+    SnekCordinates =  [
+    {"x":StartSquareX, "y":StartSquareY},
+    {"x":(StartSquareX + DifferenceX),       "y":(StartSquareY + DifferenceY)},
+    {"x":(StartSquareX + 2*DifferenceX), "y":(StartSquareY + 2*DifferenceY)}]
+
+    return SnekCordinates,FacingDirection

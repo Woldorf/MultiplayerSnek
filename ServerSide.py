@@ -1,11 +1,12 @@
 import pickle,socket,random
 from _thread import *
 #Home Brewed libraries:
+import Game
 from Snek import Snek
 from Game import GameSystem
 
 server = "192.168.49.248"   
-port = 12345
+port = 5555
 
 Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -46,22 +47,22 @@ def threadedClient(Connection,Player,IDCount,gameID):
     else:
         Connection.sendall(pickle.dumps([Players[1],Players[0],game]))
 
-    SnekDirection = Players[Player].Direction
-
     while True:
         try:
             if gameID in games:
-                if not SnekDirection:
-                    break
+                if not Player:
+                    break 
                 
                 SnekDirection,PlayerReady,Player = pickle.loads(Connection.recv(4096))
+                Players[Player].Direction = SnekDirection
+                Players[Player].Ready = PlayerReady
                 
+                print(Players[0].Direction,Players[1].Direction)
+
                 if Players[0].Ready and Players[1].Ready:
-                    Players[Player].Direction = SnekDirection
-                    Players[Player].MoveSnek()
+                    Players[0].MoveSnek()
+                    Players[1].MoveSnek()
                     Players[0],Players[1] = game.Logic(Players[0],Players[1])
-                else:
-                    Players[Player].Ready = PlayerReady
 
                 if Player == 0:
                     Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
@@ -82,39 +83,11 @@ def threadedClient(Connection,Player,IDCount,gameID):
     IDCount -= 1
     Connection.close()
 
-def SnekStartingCords(CELLSIZE):
-    DirectionList =["Left","Right","Up","Down"]
-    FacingDirection = random.choice(DirectionList)
-
-    StartSquareX = random.randint(3,CELLSIZE-3)
-    StartSquareY = random.randint(3,CELLSIZE-3)
-
-    if FacingDirection == "Left":
-        DifferenceX = 1
-        DifferenceY = 0
-    elif FacingDirection == "Right":
-        DifferenceX = -1
-        DifferenceY = 0
-    elif FacingDirection == "Down":
-        DifferenceX = 0
-        DifferenceY = -1
-    elif FacingDirection == "Up":
-        DifferenceX = 0
-        DifferenceY = 1 
-
-    SnekCordinates =  [
-    {"x":StartSquareX, "y":StartSquareY},
-    {"x":(StartSquareX + DifferenceX),       "y":(StartSquareY + DifferenceY)},
-    {"x":(StartSquareX + 2*DifferenceX), "y":(StartSquareY + 2*DifferenceY)}]
-
-    return SnekCordinates,FacingDirection
-
-TempCordsList,TempDirection = SnekStartingCords(CELLSIZE)
-TempCordsList2,TempDirection2 = SnekStartingCords(CELLSIZE)
-
-Players = [(Snek(GREEN,DARKGREEN,TempCordsList,TempDirection)),(Snek(BLUE,NAVYBLUE,TempCordsList2,TempDirection2))]
-
 while True:
+    Snek1Cords, Snek1Direction, Snek2Cords, Snek2Direction = Game.GameReset()
+
+    Players = [(Snek(GREEN,DARKGREEN,Snek1Cords,Snek1Direction)),(Snek(BLUE,NAVYBLUE,Snek2Cords,Snek2Direction))]
+
     Connection, Address = Socket.accept()
 
     IDCount += 1

@@ -71,13 +71,13 @@ while True:
                 if (event.key == K_RETURN):
                     MeSnek.Ready = True
             if MeSnek.Ready and OtherSnek.Ready:
-                if (event.key == K_LEFT or event.key == K_j) and (MeSnek[Player].Direction != "Right"):
+                if (event.key == K_a) and (MeSnek[Player].Direction != "Right"):
                     MeSnek.Direction = "Left"
-                elif (event.key == K_RIGHT or event.key == K_l) and (MeSnek[Player].Direction != "Left"):
+                elif (event.key == K_d) and (MeSnek[Player].Direction != "Left"):
                     MeSnek.Direction = "Right"
-                elif (event.key == K_UP or event.key == K_i)  and (MeSnek[Player].Direction != "Down"):
+                elif (event.key == K_w)  and (MeSnek[Player].Direction != "Down"):
                     MeSnek.Direction = "Up"
-                elif (event.key == K_DOWN or event.key == K_k) and (MeSnek[Player].Direction != "Up"):
+                elif (event.key == K_s) and (MeSnek[Player].Direction != "Up"):
                     MeSnek.Direction = "Down"
 
     if (MeSnek.Ready == True) and (OtherSnek.Ready == True):
@@ -100,8 +100,12 @@ while True:
 
         if Player == 0:
             Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
+            Drawing.DrawSNEK(Window,MeSnek.Cords,MeSnek.Color,MeSnek.InnerColor)
         else:
             Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
+            Drawing.DrawSNEK(Window,MeSnek.Cords,MeSnek.Color,MeSnek.InnerColor)
+
+    print(MeSnek.Direction,OtherSnek.Direction)
 
     Network.send(MeSnek.Direction,MeSnek.Ready,Player)
     pygame.display.update()

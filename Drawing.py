@@ -12,11 +12,9 @@ def DrawGrid(Window, xSize, ySize):
     for y in range(0, ySize, CELLSIZE): # draw horizontal lines
         pygame.draw.line(Window, DARKGREY, (0, y), (xSize, y))
 
-    pygame.display.flip()
-
 def DrawSNEK(Window,CordsList,Color,InnerColor):
     HEAD = 0
-    ORANGE    = (255, 128,   0)
+    ORANGE = (255, 128,   0)
 
     for cord in CordsList:
         x = cord["x"] * CELLSIZE
