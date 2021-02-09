@@ -5,7 +5,7 @@ import Game
 from Snek import Snek
 from Game import GameSystem
 
-server = "10.0.6.152"   
+server = "192.168.49.248"   
 port = 5555
 Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -53,15 +53,9 @@ def threadedClient(Connection,Player,IDCount,gameID):
                 if Players[0].Ready and Players[1].Ready:
                     Players[0].MoveSnek()
                     Players[1].MoveSnek()
-
                     Players[0],Players[1] = game.Logic(Players[0],Players[1])
                     
                 Connection.sendall(pickle.dumps([Players,game]))
-
-                if Player == 0:
-                    print(Players[Player].Cords," PLAYER 1 DATA")
-                else:
-                    print(Players[Player].Cords," PLAYER 2 DATA")
 
             else:
                 break

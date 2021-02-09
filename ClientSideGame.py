@@ -73,7 +73,7 @@ while True:
         if event.type == QUIT:
             break
         elif event.type == KEYDOWN:
-            if (MeSnek.Ready == False):
+            if not MeSnek.Ready:
                 if (event.key == K_RETURN):
                     MeSnek.Ready = True
             if MeSnek.Ready and OtherSnek.Ready:
@@ -86,7 +86,7 @@ while True:
                 elif (event.key == K_s) and (MeSnek.Direction != "Up"):
                     MeSnek.Direction = "Down"
 
-    if (MeSnek.Ready == True) and (OtherSnek.Ready == True):
+    if MeSnek.Ready and OtherSnek.Ready:
         if game.AppleLocation["Type"] == "Normal":
             AppleColor = RED
         elif game.AppleLocation["Type"] == "Speed":
@@ -110,11 +110,6 @@ while True:
         else:
             Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
             Drawing.DrawSNEK(Window,MeSnek.Cords,MeSnek.Color,MeSnek.InnerColor)
-
-    if Player == 0:
-        print(MeSnek.Direction,OtherSnek.Direction)
-    else: 
-        print(OtherSnek.Direction,MeSnek.Direction)
 
     Network.Send(MeSnek.Direction,MeSnek.Ready,Player)
     pygame.display.update()

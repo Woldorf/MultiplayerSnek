@@ -95,7 +95,7 @@ class GameSystem:
         else:
             del Snek2.Cords[-1]
 
-        if Snek1.Ready == False or Snek2.Ready == False:
+        if (not Snek1.Ready) or (not Snek2.Ready):
             Snek1, Snek2 = GameReset(False, Snek1, Snek2)
         
         return Snek1,Snek2
