@@ -53,10 +53,16 @@ def terminate():
 
 Network = Network()
 
-Player = Network.connect()
+Player = Network.Connect()
 
 while True:
-    MeSnek,OtherSnek,game = Network.GetData()
+    Sneks,game = Network.Get()
+    if Player == 1:
+        MeSnek = Sneks[1]
+        OtherSnek = Sneks[0]
+    else:
+        MeSnek = Sneks[0]
+        OtherSnek = Sneks[1]
 
     GameWidth,GameHeight = game.GetBoard()
     Window = pygame.display.set_mode((GameWidth, GameHeight),0,32)
@@ -71,13 +77,13 @@ while True:
                 if (event.key == K_RETURN):
                     MeSnek.Ready = True
             if MeSnek.Ready and OtherSnek.Ready:
-                if (event.key == K_a) and (MeSnek[Player].Direction != "Right"):
+                if (event.key == K_a) and (MeSnek.Direction != "Right"):
                     MeSnek.Direction = "Left"
-                elif (event.key == K_d) and (MeSnek[Player].Direction != "Left"):
+                elif (event.key == K_d) and (MeSnek.Direction != "Left"):
                     MeSnek.Direction = "Right"
-                elif (event.key == K_w)  and (MeSnek[Player].Direction != "Down"):
+                elif (event.key == K_w)  and (MeSnek.Direction != "Down"):
                     MeSnek.Direction = "Up"
-                elif (event.key == K_s) and (MeSnek[Player].Direction != "Up"):
+                elif (event.key == K_s) and (MeSnek.Direction != "Up"):
                     MeSnek.Direction = "Down"
 
     if (MeSnek.Ready == True) and (OtherSnek.Ready == True):
@@ -105,8 +111,11 @@ while True:
             Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
             Drawing.DrawSNEK(Window,MeSnek.Cords,MeSnek.Color,MeSnek.InnerColor)
 
-    print(MeSnek.Direction,OtherSnek.Direction)
+    if Player == 0:
+        print(MeSnek.Direction,OtherSnek.Direction)
+    else: 
+        print(OtherSnek.Direction,MeSnek.Direction)
 
-    Network.send(MeSnek.Direction,MeSnek.Ready,Player)
+    Network.Send(MeSnek.Direction,MeSnek.Ready,Player)
     pygame.display.update()
     TicksPerSecCLOCK.tick(TicksPerSec)

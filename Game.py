@@ -48,17 +48,23 @@ class GameSystem:
             Snek1.Ready = False
             Snek2.Ready = False
 
+        print(Snek1.Ready,Snek2.Ready,"CHECK 1")
+
         for Segment in Snek1.Cords[1:]:
             if (Segment["x"] == Snek1.Cords[HEAD]["x"] and Segment["y"] == Snek1.Cords[HEAD]["y"])\
             or (Segment["x"] == Snek2.Cords[HEAD]["x"] and Segment["y"] == Snek2.Cords[HEAD]["y"]):
                 Snek1.Ready = False
                 Snek2.Ready = False
+        
+        print(Snek1.Ready,Snek2.Ready,"CHECK 2")
 
         for Segment in Snek2.Cords[1:]:
             if (Segment["x"] == Snek2.Cords[HEAD]["x"] and Segment["y"] == Snek2.Cords[HEAD]["y"])\
             or (Segment["x"] == Snek1.Cords[HEAD]["x"] and Segment["y"] == Snek1.Cords[HEAD]["y"]):
                 Snek1.Ready = False
                 Snek2.Ready = False
+
+        print(Snek1.Ready,Snek2.Ready,"CHECK 3")
 
         #Check if Snek 1 hit an apple
         if Snek1.Cords[HEAD]["x"] == self.AppleLocation["x"] and Snek1.Cords[HEAD]["y"] == self.AppleLocation["y"]:
@@ -89,7 +95,7 @@ class GameSystem:
         else:
             del Snek2.Cords[-1]
 
-        if Snek1.Ready == False and Snek2.Ready() == False:
+        if Snek1.Ready == False or Snek2.Ready == False:
             Snek1, Snek2 = GameReset(False, Snek1, Snek2)
         
         return Snek1,Snek2
@@ -101,6 +107,7 @@ def GameReset(Starting = True, Snek1 = None, Snek2 = None):
         TempCordsList2,TempDirection2 = SnekStartingCords(CELLSIZE)
 
         return TempCordsList,TempDirection,TempCordsList2,TempDirection2
+        
     else:
         TempCordsList,TempDirection = SnekStartingCords(CELLSIZE)
         TempCordsList2,TempDirection2 = SnekStartingCords(CELLSIZE)

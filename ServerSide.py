@@ -5,9 +5,8 @@ import Game
 from Snek import Snek
 from Game import GameSystem
 
-server = "192.168.49.248"   
+server = "10.0.6.152"   
 port = 5555
-
 Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 #             R    G    B
@@ -42,32 +41,27 @@ def threadedClient(Connection,Player,IDCount,gameID):
     game = games[gameID]
 
     Connection.sendall(pickle.dumps(Player))
-    if Player == 0:
-        Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
-    else:
-        Connection.sendall(pickle.dumps([Players[1],Players[0],game]))
+    Connection.sendall(pickle.dumps([Players,game]))
 
     while True:
         try:
-            if gameID in games:
-                if not Player:
-                    break 
-                
+            if gameID in games:                
                 SnekDirection,PlayerReady,Player = pickle.loads(Connection.recv(4096))
                 Players[Player].Direction = SnekDirection
                 Players[Player].Ready = PlayerReady
-                
-                print(Players[0].Direction,Players[1].Direction)
 
                 if Players[0].Ready and Players[1].Ready:
                     Players[0].MoveSnek()
                     Players[1].MoveSnek()
+
                     Players[0],Players[1] = game.Logic(Players[0],Players[1])
+                    
+                Connection.sendall(pickle.dumps([Players,game]))
 
                 if Player == 0:
-                    Connection.sendall(pickle.dumps([Players[0],Players[1],game]))
+                    print(Players[Player].Cords," PLAYER 1 DATA")
                 else:
-                    Connection.sendall(pickle.dumps([Players[1],Players[0],game]))
+                    print(Players[Player].Cords," PLAYER 2 DATA")
 
             else:
                 break
@@ -81,6 +75,7 @@ def threadedClient(Connection,Player,IDCount,gameID):
     except:
         pass
     IDCount -= 1
+    gameID -= 1
     Connection.close()
 
 while True:
