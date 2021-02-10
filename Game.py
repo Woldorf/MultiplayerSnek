@@ -3,7 +3,7 @@ import random
 class GameSystem:
     def __init__(self, id,CellsWide,CellsTall):
         self.id = id
-        self.TicksPerSec = 10
+        self.TicksPerSec = 2
         self.CellsWide = CellsWide
         self.CellsTall = CellsTall
         self.CellSize = 20
@@ -46,25 +46,19 @@ class GameSystem:
         if Snek1.Cords[HEAD]["x"] == -1 or Snek1.Cords[HEAD]["x"] == self.CellsWide or Snek1.Cords[HEAD]["y"] == -1 or Snek1.Cords[HEAD]["y"] == self.CellsTall\
         or Snek2.Cords[HEAD]["x"] == -1 or Snek2.Cords[HEAD]["x"] == self.CellsWide or Snek2.Cords[HEAD]["y"] == -1 or Snek2.Cords[HEAD]["y"] == self.CellsTall:
             Snek1.Ready = False
-            Snek2.Ready = False
-
-        print(Snek1.Ready,Snek2.Ready,"CHECK 1")
-
+            Snek2.Ready = False 
+    
         for Segment in Snek1.Cords[1:]:
             if (Segment["x"] == Snek1.Cords[HEAD]["x"] and Segment["y"] == Snek1.Cords[HEAD]["y"])\
             or (Segment["x"] == Snek2.Cords[HEAD]["x"] and Segment["y"] == Snek2.Cords[HEAD]["y"]):
                 Snek1.Ready = False
                 Snek2.Ready = False
-        
-        print(Snek1.Ready,Snek2.Ready,"CHECK 2")
 
         for Segment in Snek2.Cords[1:]:
             if (Segment["x"] == Snek2.Cords[HEAD]["x"] and Segment["y"] == Snek2.Cords[HEAD]["y"])\
             or (Segment["x"] == Snek1.Cords[HEAD]["x"] and Segment["y"] == Snek1.Cords[HEAD]["y"]):
                 Snek1.Ready = False
                 Snek2.Ready = False
-
-        print(Snek1.Ready,Snek2.Ready,"CHECK 3")
 
         #Check if Snek 1 hit an apple
         if Snek1.Cords[HEAD]["x"] == self.AppleLocation["x"] and Snek1.Cords[HEAD]["y"] == self.AppleLocation["y"]:
@@ -95,7 +89,7 @@ class GameSystem:
         else:
             del Snek2.Cords[-1]
 
-        if (not Snek1.Ready) or (not Snek2.Ready):
+        if not (Snek1.Ready and Snek2.Ready):
             Snek1, Snek2 = GameReset(False, Snek1, Snek2)
         
         return Snek1,Snek2

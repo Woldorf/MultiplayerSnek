@@ -5,7 +5,7 @@ import Game
 from Snek import Snek
 from Game import GameSystem
 
-server = "192.168.49.248"   
+server = "10.0.6.152" #"192.168.49.248"   
 port = 5555
 Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -72,11 +72,10 @@ def threadedClient(Connection,Player,IDCount,gameID):
     gameID -= 1
     Connection.close()
 
+Snek1Cords, Snek1Direction, Snek2Cords, Snek2Direction = Game.GameReset()
+Players = [(Snek(GREEN,DARKGREEN,Snek1Cords,Snek1Direction)),(Snek(BLUE,NAVYBLUE,Snek2Cords,Snek2Direction))]
+
 while True:
-    Snek1Cords, Snek1Direction, Snek2Cords, Snek2Direction = Game.GameReset()
-
-    Players = [(Snek(GREEN,DARKGREEN,Snek1Cords,Snek1Direction)),(Snek(BLUE,NAVYBLUE,Snek2Cords,Snek2Direction))]
-
     Connection, Address = Socket.accept()
 
     IDCount += 1

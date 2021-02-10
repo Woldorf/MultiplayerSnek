@@ -1,7 +1,7 @@
 import pygame, random, sys
 from pygame.locals import *
 #Home Brewed Libraries:
-import Drawing, Game
+import Drawing
 from network import Network
 pygame.init()
 
@@ -52,7 +52,6 @@ def terminate():
     sys.exit()
 
 Network = Network()
-
 Player = Network.Connect()
 
 while True:
@@ -101,15 +100,14 @@ while True:
         Drawing.DrawScores(Window,"RIGHT",OtherSnek.Cords,GameWidth)
         Drawing.DrawApple(Window,game.AppleLocation,AppleColor)
 
-    elif (MeSnek.Ready == False) or (OtherSnek.Ready == False):
-        Drawing.DrawGrid(Window,GameWidth,GameHeight)
+        print(MeSnek.Direction,OtherSnek.Direction)
 
-        if Player == 0:
-            Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
-            Drawing.DrawSNEK(Window,MeSnek.Cords,MeSnek.Color,MeSnek.InnerColor)
-        else:
-            Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
-            Drawing.DrawSNEK(Window,MeSnek.Cords,MeSnek.Color,MeSnek.InnerColor)
+    elif not (MeSnek.Ready and OtherSnek.Ready):
+        Drawing.DrawGrid(Window,GameWidth,GameHeight)
+        Drawing.DrawStartScreen(Window,GameWidth,GameHeight,Player)
+
+        Drawing.DrawSNEK(Window,MeSnek.Cords,MeSnek.Color,MeSnek.InnerColor)
+        Drawing.DrawSNEK(Window,OtherSnek.Cords,OtherSnek.Color,OtherSnek.InnerColor)
 
     Network.Send(MeSnek.Direction,MeSnek.Ready,Player)
     pygame.display.update()
